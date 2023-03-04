@@ -40,7 +40,7 @@ export class HomePage extends BasePage {
 
   }
 
-  async buyProduct(card){
+  async clickBuyProduct(card){
 
    await card.getByRole('button', { name: 'Купить' }).click();
    await this.page.waitForTimeout(300);  
@@ -75,6 +75,20 @@ export class HomePage extends BasePage {
     }
 
     return basketItemList;
+  }
+
+  async getCardWithSameName(needCount){
+
+    let getProductCount  = await this.Item.cardHasDiscount.locator('.product_count ').allTextContents();
+    let index = getProductCount.findIndex(productCount => productCount >= needCount);
+
+    if(index != -1){
+      return  this.Item.cardHasDiscount.nth(index);
+    }
+    else{
+      console.log('go to next page');  
+    }
+
   }
 
 }

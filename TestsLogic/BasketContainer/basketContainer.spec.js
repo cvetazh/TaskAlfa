@@ -29,7 +29,7 @@ test.describe('Basket Container', async () => {
   test('Go to the shopping cart with 1 discountless item', async ({page}) => {
 
     let randomCart = await homePage.getRandomCard(false);
-    await homePage.buyProduct(randomCart);
+    await homePage.clickBuyProduct(randomCart);
     let productName = await homePage.getProductName(randomCart);
     let productPrice = await homePage.getProductPrice(randomCart);
     await expect(homePage.Basket.basketCountItem).toHaveText('1');
@@ -45,7 +45,7 @@ test.describe('Basket Container', async () => {
   test('Go to the shopping cart with 1 discount item', async ({page}) => {
 
     let randomCart = await homePage.getRandomCard(true);
-    await homePage.buyProduct(randomCart);
+    await homePage.clickBuyProduct(randomCart);
     let productName = await homePage.getProductName(randomCart);
     let productPrice = await homePage.getProductPrice(randomCart);
     await expect(homePage.Basket.basketCountItem).toHaveText('1');
@@ -53,6 +53,28 @@ test.describe('Basket Container', async () => {
     let listBasketProduct = await homePage.getBasketItemList();
     await expect(listBasketProduct).toContain(productName + ' ' + productPrice);
     await expect(homePage.Basket.totalBasketPrice).toContainText(productPrice);
+    await homePage.Basket.goToBasket.click();
+    await expect(page).toHaveURL('https://enotes.pointschool.ru/basket');
+
+  });
+
+  test('Go to the shopping cart with 9 discount items of the same name', async ({page}) => {
+   
+    const needCountCard = 9;
+
+    let cardWithSameName = await homePage.getCardWithSameName(needCountCard);
+
+    for(let i = 0; i < needCountCard; i++){
+      await homePage.clickBuyProduct(cardWithSameName);
+    }
+
+    await expect(homePage.Basket.basketCountItem).toHaveText(String(needCountCard));
+    let productName = await homePage.getProductName(cardWithSameName);
+    let productPrice = await homePage.getProductPrice(cardWithSameName);
+    await homePage.Basket.basket.click();
+    let listBasketProduct = await homePage.getBasketItemList();
+    await expect(listBasketProduct).toContain(productName + ' ' + productPrice*needCountCard);
+    await expect(homePage.Basket.totalBasketPrice).toContainText(String(productPrice*needCountCard));
     await homePage.Basket.goToBasket.click();
     await expect(page).toHaveURL('https://enotes.pointschool.ru/basket');
 
