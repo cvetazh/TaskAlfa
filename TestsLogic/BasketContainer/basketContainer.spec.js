@@ -20,15 +20,47 @@ test.describe('Basket Container', async () => {
   });
 
   test('Go to an empty shopping cart', async ({page}) => {
-    await homePage.Element.basket.click();
-    await expect(homePage.Element.basketPopup).toBeVisible()
-    await homePage.Button.goToBasket.click();
+    await homePage.Basket.basket.click();
+    await expect(homePage.Basket.basketPopup).toBeVisible()
+    await homePage.Basket.goToBasket.click();
     await expect(page).toHaveURL('https://enotes.pointschool.ru/basket')
   });
 
+  test('Go to the shopping cart with 1 discountless item', async ({page}) => {
 
+    let randomCart = await homePage.getRandomCard(false);
+    await homePage.buyProduct(randomCart);
+    let productName = await homePage.getProductName(randomCart);
+    let productPrice = await homePage.getProductPrice(randomCart);
+    await expect(homePage.Basket.basketCountItem).toHaveText('1');
+    await homePage.Basket.basket.click();
+    let listBasketProduct = await homePage.getBasketItemList();
+    await expect(listBasketProduct).toContain(productName + ' ' + productPrice);
+    await expect(homePage.Basket.totalBasketPrice).toContainText(productPrice);
+    await homePage.Basket.goToBasket.click();
+    await expect(page).toHaveURL('https://enotes.pointschool.ru/basket');
+
+  });
+
+  test('Go to the shopping cart with 1 discount item', async ({page}) => {
+
+    let randomCart = await homePage.getRandomCard(true);
+    await homePage.buyProduct(randomCart);
+    let productName = await homePage.getProductName(randomCart);
+    let productPrice = await homePage.getProductPrice(randomCart);
+    await expect(homePage.Basket.basketCountItem).toHaveText('1');
+    await homePage.Basket.basket.click();
+    let listBasketProduct = await homePage.getBasketItemList();
+    await expect(listBasketProduct).toContain(productName + ' ' + productPrice);
+    await expect(homePage.Basket.totalBasketPrice).toContainText(productPrice);
+    await homePage.Basket.goToBasket.click();
+    await expect(page).toHaveURL('https://enotes.pointschool.ru/basket');
+
+  });
 
 })
+
+
 
 
 
