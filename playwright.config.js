@@ -11,6 +11,7 @@ const { defineConfig, devices } = require('@playwright/test');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
+  globalSetup: require.resolve('./global-setup'),
   testDir: './TestsLogic',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -36,7 +37,7 @@ module.exports = defineConfig({
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: 'https://enotes.pointschool.ru',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -47,17 +48,29 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+         ...devices['Desktop Chrome'],
+         viewport: {height: 816, width: 1536},
+         storageState: './storageState.json'
+      },
     },
 
     // {
     //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
+    //   use: {
+    //       ...devices['Desktop Firefox'],
+    //       viewport: {height: 816, width: 1536},
+    //          storageState: './storageState.json'
+    //     },
     // },
 
     // {
     //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
+    //   use: { 
+    //         ...devices['Desktop Safari'],
+    //         viewport: {height: 816, width: 1536},
+    //            storageState: './storageState.json'
+    //       },
     // },
 
     /* Test against mobile viewports. */

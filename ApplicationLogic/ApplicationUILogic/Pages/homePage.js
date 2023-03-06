@@ -1,13 +1,14 @@
 import {BasePage} from './basePage';
 
 export class HomePage extends BasePage {
+
   constructor(page){
     super(page);
   }
 
   Element = {
     username: this.page.locator('#dropdownUser'),
-    sleep : this.page.locator('#dropdownBasketssss'),
+    secondPage: this.page.locator('.page-item:nth-child(2)')
   }
 
   Basket = {
@@ -19,10 +20,10 @@ export class HomePage extends BasePage {
     totalBasketPrice: this.page.locator('.basket_price')
   }
 
-
   Item = {
     cardsWithinDiscount: this.page.locator('div.note-list > div > div:not(.hasDiscount)'),
-    cardHasDiscount: this.page.locator('div.note-list > div > div.hasDiscount')
+    cardHasDiscount: this.page.locator('div.note-list > div > div.hasDiscount'),
+    allCardList: this.page.locator('div.note-list > div')
   }
 
   async getRandomCard(discount){
@@ -37,59 +38,61 @@ export class HomePage extends BasePage {
       countCards = await this.Item.cardsWithinDiscount.count();
       return randomItem = await this.Item.cardsWithinDiscount.nth(Math.floor(Math.random() * countCards));
     }
-
   }
 
   async clickBuyProduct(card){
-
    await card.getByRole('button', { name: 'Купить' }).click();
-   await this.page.waitForTimeout(300);  
-
   }
   
   async getProductName(card){
-
     let productName = await card.locator('.product_name').innerText();;
     return productName;
-
   }
 
   async getProductPrice(card){
-
     let infoProductList = await card.locator('.product_price').innerText();
     return infoProductList.match(/\d+(?= р)/g)[0];
-    
   }
 
-  async getBasketItemList(){
-
+  async getInfoBasketItemList(){
     let basketItemList = [];
-
     for (const li of await this.Basket.basketItemList.getByRole('listitem').all()){
-
       let itemTitle = await li.locator('.basket-item-title').innerText();
       let itemPrice  = await li.locator('.basket-item-price').innerText();
       let infoItem = itemTitle + ' ' + itemPrice.match(/\d+/g)[0];
       basketItemList.push(infoItem);
-
     }
-
     return basketItemList;
   }
 
-  async getCardWithSameName(needCount){
+  async getProductNameFromBasket(){
+    let productName = await this.Basket.basketItemList.locator('.basket-item-title').innerText();
+    return productName;
+  }
 
+  async getCardWithSameName(needCount){
     let getProductCount  = await this.Item.cardHasDiscount.locator('.product_count ').allTextContents();
     let index = getProductCount.findIndex(productCount => productCount >= needCount);
-
     if(index != -1){
       return  this.Item.cardHasDiscount.nth(index);
     }
-    else{
-      console.log('go to next page');  
-    }
+  }
 
+  async getListBuyProduct(existedCardName, existedTotalSum){
+    let listProduct = new Map([[existedCardName, existedTotalSum]]);
+    for (const card of await this.Item.allCardList.all()) {
+      let productName = await this.getProductName(card);
+      let productPrice = Number(await this.getProductPrice(card));
+      if ( !listProduct.has(productName) ){
+         await this.clickBuyProduct(card);
+         listProduct.set(productName, productPrice);
+      }
+    }
+    return listProduct;
+  }
+
+  async getTotalBasketPrice(listBuyProduct){
+    return Array.from(listBuyProduct.values()).reduce((sum, price) => { return sum + price; }, 0);
   }
 
 }
-
