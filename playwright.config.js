@@ -56,7 +56,7 @@ module.exports = defineConfig({
     },
 
     // {
-    //   name: 'firefox',
+    //   name: 'firefox',Ф
     //   use: {
     //       ...devices['Desktop Firefox'],
     //       viewport: {height: 816, width: 1536},

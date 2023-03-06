@@ -6,24 +6,24 @@ import { HomePage } from '../../ApplicationLogic/ApplicationUILogic/Pages/homePa
 test.describe('Basket Container', async () => {
   let homePage;
 
-  test.beforeEach(async({page}) =>{
+  test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
     await clearBasket();
     await page.goto('/');
-  })  
+  })
 
-  test.afterEach(async ({page}) => {
+  test.afterEach(async ({ page }) => {
     await page.close();
   })
 
-  test('Go to an empty shopping cart', async ({page}) => {
+  test('Go to an empty shopping cart', async ({ page }) => {
     await homePage.Basket.basket.click();
     await expect(homePage.Basket.basketPopup).toBeVisible()
     await homePage.Basket.goToBasket.click();
     await expect(page).toHaveURL('/basket');
   });
 
-  test('Go to the shopping cart with 1 discountless item', async ({page}) => {
+  test('Go to the shopping cart with 1 discountless item', async ({ page }) => {
     const needCountCard = 1;
 
     let randomCart = await homePage.getRandomCard(false);
@@ -40,7 +40,7 @@ test.describe('Basket Container', async () => {
 
   });
 
-  test('Go to the shopping cart with 1 discount item', async ({page}) => {
+  test('Go to the shopping cart with 1 discount item', async ({ page }) => {
     const needCountCard = 1;
 
     let randomCart = await homePage.getRandomCard(true);
@@ -57,12 +57,12 @@ test.describe('Basket Container', async () => {
 
   });
 
-  test('Go to the shopping cart with 9 discount items of the same name', async ({page}) => {
+  test('Go to the shopping cart with 9 discount items of the same name', async ({ page }) => {
     const needCountCard = 9;
 
     let cardWithSameName = await homePage.getCardWithSameName(needCountCard);
 
-    for(let i = 0; i < needCountCard; i++){
+    for (let i = 0; i < needCountCard; i++) {
       await homePage.clickBuyProduct(cardWithSameName);
     }
 
@@ -71,13 +71,13 @@ test.describe('Basket Container', async () => {
     let productPrice = await homePage.getProductPrice(cardWithSameName);
     await homePage.Basket.basket.click();
     let listBasketProduct = await homePage.getInfoBasketItemList();
-    await expect(listBasketProduct).toContain(productName + ' ' + productPrice*needCountCard);
-    await expect(homePage.Basket.totalBasketPrice).toContainText(String(productPrice*needCountCard));
+    await expect(listBasketProduct).toContain(productName + ' ' + productPrice * needCountCard);
+    await expect(homePage.Basket.totalBasketPrice).toContainText(String(productPrice * needCountCard));
     await homePage.Basket.goToBasket.click();
     await expect(page).toHaveURL('/basket');
   });
 
-  test('Go to the shopping cart with 9 different items', async ({page}) => {
+  test('Go to the shopping cart with 9 different items', async ({ page }) => {
     await addProduct();
     await page.reload();
     const needCountCard = 9;
@@ -94,7 +94,7 @@ test.describe('Basket Container', async () => {
     await homePage.Basket.basket.click();
     await page.waitForTimeout(3000);
     let listBasketProduct = await homePage.getInfoBasketItemList();
-    listBuyProduct.forEach((values, keys)=>{
+    listBuyProduct.forEach((values, keys) => {
       let productPrice = values;
       let productName = keys;
       expect(listBasketProduct).toContain(productName + ' ' + productPrice);
@@ -106,10 +106,3 @@ test.describe('Basket Container', async () => {
   });
 
 });
-
-
-
-
-
-
-
