@@ -1,8 +1,8 @@
 import { request } from '@playwright/test';
 
 export default async function addProduct() {
-  const cookie = 'PHPSESSID=561c3ea152061cdafbf29db3183608d1; _csrf=11818a65e1d22009b0e40837ddfe17b39c160a35ec3c3d57ea2097fc8607b2b2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22oKBjtgHnyR6b9pUEldyYmA8d-20OEGFS%22%3B%7D';
-  const token = 'IG2cxSltz2xYrJBqNWITryQ19PvtfVDWOv5MDSOEHHJPJt6vXQqHAiH-pggMEkbqSFGNooA8aLIXzHxCZsNaIQ==';
+  const cookie = 'PHPSESSID=25b882164688a79b34fec986901d5db5; _csrf=c6e6b68c37d54efe407e24488bf4116b35a1000c36c8e2c7bb445b4ac175baa9a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22pIThv4RWIfCKIYvsuw6p6M6N7N64wwyN%22%3B%7D';
+  const token = 'RnGwYbj14WKGXMHDdj5kpjLdczgXD6rf4D_SzKTS2242OOQJzsGzNc86gog_ZxLVR6pFSCFCnJHXceT406WiIA==';
   const apiContext = await request.newContext();
   const response = await apiContext.post('https://enotes.pointschool.ru/basket/create', {
     headers: {
